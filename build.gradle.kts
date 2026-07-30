@@ -1,36 +1,26 @@
 plugins {
-    id("fabric-loom") version "1.17-SNAPSHOT"
+    id("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
     id("maven-publish")
 }
 
 version = project.property("mod_version") as String
 group = project.property("maven_group") as String
 
-base {
-    archivesName.set(project.name)
-}
-
 repositories {
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "Modrinth"
-                url = uri("https://api.modrinth.com/maven")
-            }
-        }
-        filter {
-            includeGroup("maven.modrinth")
-        }
-    }
+    // Add repositories to retrieve artifacts from in here.
+    // You should only use this when depending on other mods because
+    // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+    // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+    // for more information about repositories.
 }
 
 loom {
-    runs {
-        named("client") {
-            // 如果需要指定 sourceSet
-        }
-        named("server") {
-            // 如果需要指定 sourceSet
+    splitEnvironmentSourceSets()
+
+    mods {
+        create("flerovium") {
+            sourceSet(sourceSets["main"])
+            sourceSet(sourceSets["client"])
         }
     }
 }
@@ -39,13 +29,11 @@ dependencies {
     // Minecraft
     "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
     
-    // 👇 必须使用 Mojang 官方映射！绝对不能有 yarn 字眼！
     "mappings"(loom.officialMojangMappings())
 
     // Fabric API
     "modImplementation"("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 
-    // 第三方模组依赖（编译时可选）
     "modCompileOnly"("maven.modrinth:sodium:2Yom1N68")
     "modCompileOnly"("maven.modrinth:iris:oaD6KQls")
 }
@@ -59,35 +47,42 @@ tasks.processResources {
     }
 }
 
-// 如果有其他自定义任务处理 projectName，可以类似这样写：
-// tasks.register("yourCustomTask") {
-//     val projectName = project.name
-//     inputs.property("projectName", projectName)
-// }
-
 tasks.withType<JavaCompile>().configureEach {
-    options.release.set(21)
+    options.release.set(25)
 }
 
 java {
+    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
+    // if it is present.
+    // If you remove this line, sources will not be generated.
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.jar {
+    val projectName = project.name
+    inputs.property("projectName", projectName)
+
     from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}" }
+        rename { "${it}_$projectName" }
     }
 }
 
+// configure the maven publication
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
             from(components["java"])
         }
     }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // 如果需要发布到仓库，在这里添加
+        // Add repositories to publish to here.
+        // Notice: This block does NOT have the same function as the block in the top level.
+        // The repositories here will be used for publishing your artifact, not for
+        // retrieving dependencies.
     }
 }
