@@ -38,7 +38,7 @@ loom {
 dependencies {
     // Minecraft
     "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
-    "mappings"("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
+    "mappings"("net.fabricmc:yarn:${project.property("minecraft_version")}:v2")
 
     // ⚠️ 不要手动添加 fabric-loader，Loom 会自动管理！
     // modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")  // ❌ 已注释
