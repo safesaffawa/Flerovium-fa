@@ -18,11 +18,6 @@ repositories {
 loom {
 
     }
-    // 如果需要配置 Mixin 相关选项
-    mixin {
-        // 这里可以配置 refmap 名称等
-        // defaultRefmapName.set("mixins.flerovium.refmap.json")
-    }
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
