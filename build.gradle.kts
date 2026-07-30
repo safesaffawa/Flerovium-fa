@@ -16,12 +16,7 @@ repositories {
 }
 
 loom {
-    splitEnvironmentSourceSets()
-    mods {
-        create("flerovium") {
-            sourceSet(sourceSets["main"])
-            sourceSet(sourceSets["client"])
-        }
+
     }
     // 如果需要配置 Mixin 相关选项
     mixin {
