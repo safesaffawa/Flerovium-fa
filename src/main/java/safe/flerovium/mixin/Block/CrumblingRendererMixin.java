@@ -1,4 +1,4 @@
-package safe.flerovium.mixin.render;
+package safe.flerovium.mixin.Block;
 
 import net.minecraft.client.renderer.LevelRenderer;
 import org.spongepowered.asm.mixin.Mixin;

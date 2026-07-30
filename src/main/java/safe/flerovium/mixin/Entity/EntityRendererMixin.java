@@ -3,7 +3,6 @@ package safe.flerovium.mixin.Entity;
 import safe.flerovium.Flerovium;
 import safe.flerovium.Iris.IrisEntityRenderer;
 import safe.flerovium.Iris.IrisEntityVertex;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.caffeinemc.mods.sodium.api.math.MatrixHelper;
@@ -52,7 +51,7 @@ public abstract class EntityRendererMixin {
     private static void onRenderCuboid(PoseStack.Pose matrices, VertexBufferWriter writer, ModelCuboid cuboid, int light, int overlay, int color, CallbackInfo ci) {
         ci.cancel();
 
-        boolean isRenderingIrisEntity = writer instanceof BufferBuilder bb && bb.format == IrisEntityVertex.FORMAT;
+        boolean isRenderingIrisEntity = writer instanceof BufferBuilder && ((Object) writer).getClass().getName().contains("Iris");
         int cullingMask = flerovium$prepareVertices(matrices, cuboid, color);
         prepareNormalsIfChanged(matrices);
         try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -128,7 +127,7 @@ public abstract class EntityRendererMixin {
         setVertex(VERTEX_X0_Y1_Z1, c011x, c011y, c011z, color);
 
         int cullingMask = ((ModelCuboidAccessor) cuboid).getCullMask();
-        if (matrices.pose().m32() <= -16.0F && Flerovium.config.entityBackFaceCulling && RenderSystem.getModelViewMatrix().m32() == 0) {
+        if (matrices.pose().m32() <= -16.0F && Flerovium.config.entityBackFaceCulling) {
             Matrix3f normal = matrices.normal();
 
             float posX = c000x + c011x;

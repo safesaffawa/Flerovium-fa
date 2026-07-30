@@ -27,6 +27,6 @@ public final class EntityVertex {
     }
 
     static {
-        FORMAT = DefaultVertexFormat.NEW_ENTITY;
+        FORMAT = DefaultVertexFormat.ENTITY;
     }
 }

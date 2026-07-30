@@ -8,9 +8,8 @@ import net.caffeinemc.mods.sodium.api.math.MatrixHelper;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
 import net.caffeinemc.mods.sodium.client.model.quad.ModelQuadView;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraft.util.FastColor;
 import org.joml.Math;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -43,7 +42,7 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
     }
 
     @Override
-    public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+    public VertexConsumer setColor(int color) {
         this.delegate.setColor(-1);
         return this;
     }
@@ -54,19 +53,24 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
     }
 
     @Override
-    public VertexConsumer setUv1(int u, int v) {
-        this.delegate.setUv1(u, v);
+    public VertexConsumer setOverlay(int overlay) {
+        this.delegate.setOverlay(overlay);
         return this;
     }
 
     @Override
-    public VertexConsumer setUv2(int u, int v) {
-        this.delegate.setUv2(u, v);
+    public VertexConsumer setLight(int light) {
+        this.delegate.setLight(light);
         return this;
     }
 
+    @Override
+    public void setLineWidth(float width) {
+        this.delegate.setLineWidth(width);
+    }
+
     private static Vector3f calcUV(float normalX, float normalY, float normalZ, float dx, float dy, float dz) {
-        Direction direction = Direction.getNearest(normalX, normalY, normalZ);
+        Direction direction = Direction.getNearest((int) normalX, (int) normalY, (int) normalZ, null);
         float u, v;
         switch (direction) {
             case DOWN -> {
@@ -203,44 +207,30 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
         }
     }
 
-    @Override
     public void putBulkData(
             PoseStack.Pose pose,
             BakedQuad bakedQuad,
             float[] brightness,
-            float red,
-            float green,
-            float blue,
-            float alpha,
+            float red, float green, float blue, float alpha,
             int[] lightmap,
             int packedOverlay,
             boolean readAlpha
     ) {
-        if (bakedQuad.getVertices().length < 32) {
-            return;
-        }
         VertexBufferWriter writer = VertexBufferWriter.tryOf(delegate);
         if (writer == null) {
             VertexConsumer.super.putBulkData(
-                    pose,
-                    bakedQuad,
-                    brightness,
-                    FastColor.ARGB32.red(0xFFFFFFFF),
-                    FastColor.ARGB32.green(0xFFFFFFFF),
-                    FastColor.ARGB32.blue(0xFFFFFFFF),
-                    FastColor.ARGB32.alpha(0xFFFFFFFF),
-                    lightmap,
-                    packedOverlay,
-                    readAlpha
+                    pose, bakedQuad, brightness,
+                    1.0f, 1.0f, 1.0f, 1.0f,
+                    lightmap, packedOverlay, readAlpha
             );
             return;
         }
-        if (!(delegate instanceof BufferBuilder bb)) return;
+        if (!(delegate instanceof BufferBuilder)) return;
 
-        if (bb.format == BlockVertex.FORMAT) {
-            putBulkDataSodium(writer, pose, bakedQuad, lightmap);
-        } else {
+        if (((Object) delegate).getClass().getName().contains("Iris")) {
             putBulkDataIris(writer, pose, bakedQuad, lightmap);
+        } else {
+            putBulkDataSodium(writer, pose, bakedQuad, lightmap);
         }
     }
 }

@@ -7,11 +7,8 @@ import net.caffeinemc.mods.sodium.api.util.ColorARGB;
 import net.caffeinemc.mods.sodium.api.util.ColorMixer;
 import net.caffeinemc.mods.sodium.api.util.NormI8;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
-import net.caffeinemc.mods.sodium.client.model.quad.BakedQuadView;
-import net.caffeinemc.mods.sodium.client.model.quad.properties.ModelQuadFacing;
-import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.SimpleBakedModel;
+import net.caffeinemc.mods.sodium.client.model.quad.ModelQuadView;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Math;
@@ -47,93 +44,66 @@ public class FastSimpleBakedModelRenderer {
 
     private static void putBulkData(VertexBufferWriter writer, PoseStack.Pose pose, BakedQuad bakedQuad, int light,
                                     int overlay, int color, int faces) {
-        int[] vertices = bakedQuad.getVertices();
-        if (vertices.length != VERTEX_COUNT * STRIDE) return;
+        ModelQuadView quad = (ModelQuadView) bakedQuad;
         Matrix4f pose_matrix = pose.pose();
-        int baked_normal = vertices[7];
-        float unpackedX = NormI8.unpackX(baked_normal);
-        float unpackedY = NormI8.unpackY(baked_normal);
-        float unpackedZ = NormI8.unpackZ(baked_normal);
-        float nx = MatrixHelper.transformNormalX(pose.normal(), unpackedX, unpackedY, unpackedZ);
-        float ny = MatrixHelper.transformNormalY(pose.normal(), unpackedX, unpackedY, unpackedZ);
-        float nz = MatrixHelper.transformNormalZ(pose.normal(), unpackedX, unpackedY, unpackedZ);
+        int pn = quad.getFaceNormal();
+        float nx = MatrixHelper.transformNormalX(pose.normal(), NormI8.unpackX(pn), NormI8.unpackY(pn), NormI8.unpackZ(pn));
+        float ny = MatrixHelper.transformNormalY(pose.normal(), NormI8.unpackX(pn), NormI8.unpackY(pn), NormI8.unpackZ(pn));
+        float nz = MatrixHelper.transformNormalZ(pose.normal(), NormI8.unpackX(pn), NormI8.unpackY(pn), NormI8.unpackZ(pn));
         int n = packSafe(nx, ny, nz);
 
-        float x = Float.intBitsToFloat(vertices[0]), y = Float.intBitsToFloat(vertices[1]), z = Float.intBitsToFloat(vertices[2]);
-        float pos0_x = MatrixHelper.transformPositionX(pose_matrix, x, y, z);
-        float pos0_y = MatrixHelper.transformPositionY(pose_matrix, x, y, z);
-        float pos0_z = MatrixHelper.transformPositionZ(pose_matrix, x, y, z);
-        x = Float.intBitsToFloat(vertices[STRIDE * 2]);
-        y = Float.intBitsToFloat(vertices[STRIDE * 2 + 1]);
-        z = Float.intBitsToFloat(vertices[STRIDE * 2 + 2]);
+        float p0x = MatrixHelper.transformPositionX(pose_matrix, quad.getX(0), quad.getY(0), quad.getZ(0));
+        float p0y = MatrixHelper.transformPositionY(pose_matrix, quad.getX(0), quad.getY(0), quad.getZ(0));
+        float p0z = MatrixHelper.transformPositionZ(pose_matrix, quad.getX(0), quad.getY(0), quad.getZ(0));
+        float p2x = MatrixHelper.transformPositionX(pose_matrix, quad.getX(2), quad.getY(2), quad.getZ(2));
+        float p2y = MatrixHelper.transformPositionY(pose_matrix, quad.getX(2), quad.getY(2), quad.getZ(2));
+        float p2z = MatrixHelper.transformPositionZ(pose_matrix, quad.getX(2), quad.getY(2), quad.getZ(2));
 
-        float pos2_x = MatrixHelper.transformPositionX(pose_matrix, x, y, z);
-        float pos2_y = MatrixHelper.transformPositionY(pose_matrix, x, y, z);
-        float pos2_z = MatrixHelper.transformPositionZ(pose_matrix, x, y, z);
-
-        if ((faces & 0b1000000) != 0) { // Backface culling
-            if ((pos0_x + pos2_x) * nx + (pos0_y + pos2_y) * ny + (pos0_z + pos2_z) * nz > 0)
-                if (((BakedQuadView) bakedQuad).getNormalFace() != ModelQuadFacing.UNASSIGNED)
-                    return;
+        if ((faces & 0b1000000) != 0) {
+            if ((p0x + p2x) * nx + (p0y + p2y) * ny + (p0z + p2z) * nz > 0)
+                return;
         }
-        x = Float.intBitsToFloat(vertices[STRIDE]);
-        y = Float.intBitsToFloat(vertices[STRIDE + 1]);
-        z = Float.intBitsToFloat(vertices[STRIDE + 2]);
-        float pos1_x = MatrixHelper.transformPositionX(pose_matrix, x, y, z);
-        float pos1_y = MatrixHelper.transformPositionY(pose_matrix, x, y, z);
-        float pos1_z = MatrixHelper.transformPositionZ(pose_matrix, x, y, z);
+        float p1x = MatrixHelper.transformPositionX(pose_matrix, quad.getX(1), quad.getY(1), quad.getZ(1));
+        float p1y = MatrixHelper.transformPositionY(pose_matrix, quad.getX(1), quad.getY(1), quad.getZ(1));
+        float p1z = MatrixHelper.transformPositionZ(pose_matrix, quad.getX(1), quad.getY(1), quad.getZ(1));
+        float p3x = MatrixHelper.transformPositionX(pose_matrix, quad.getX(3), quad.getY(3), quad.getZ(3));
+        float p3y = MatrixHelper.transformPositionY(pose_matrix, quad.getX(3), quad.getY(3), quad.getZ(3));
+        float p3z = MatrixHelper.transformPositionZ(pose_matrix, quad.getX(3), quad.getY(3), quad.getZ(3));
 
-        x = Float.intBitsToFloat(vertices[STRIDE * 3]);
-        y = Float.intBitsToFloat(vertices[STRIDE * 3 + 1]);
-        z = Float.intBitsToFloat(vertices[STRIDE * 3 + 2]);
-        float pos3_x = MatrixHelper.transformPositionX(pose_matrix, x, y, z);
-        float pos3_y = MatrixHelper.transformPositionY(pose_matrix, x, y, z);
-        float pos3_z = MatrixHelper.transformPositionZ(pose_matrix, x, y, z);
+        final int c = color != -1 ? ColorMixer.mulComponentWise(color, quad.getColor(0)) : quad.getColor(0);
+        final int l = Math.max(((quad.getLight(0) & 0xffff) << 16) | (quad.getLight(0) >> 16), light);
+        long P = BUFFER_PTR;
+        EntityVertex.write(P, p0x, p0y, p0z, c, Float.floatToIntBits(quad.getTexU(0)), Float.floatToIntBits(quad.getTexV(0)), overlay, l, n); P += EntityVertex.STRIDE;
+        EntityVertex.write(P, p1x, p1y, p1z, c, Float.floatToIntBits(quad.getTexU(1)), Float.floatToIntBits(quad.getTexV(1)), overlay, l, n); P += EntityVertex.STRIDE;
+        EntityVertex.write(P, p2x, p2y, p2z, c, Float.floatToIntBits(quad.getTexU(2)), Float.floatToIntBits(quad.getTexV(2)), overlay, l, n); P += EntityVertex.STRIDE;
+        EntityVertex.write(P, p3x, p3y, p3z, c, Float.floatToIntBits(quad.getTexU(3)), Float.floatToIntBits(quad.getTexV(3)), overlay, l, n); P += EntityVertex.STRIDE;
 
-        final int c = color != -1 ? ColorMixer.mulComponentWise(color, vertices[3]) : vertices[3];
-        final int baked = vertices[6];
-        final int l = Math.max(((baked & 0xffff) << 16) | (baked >> 16), light);
-        long WRITE_PTR = BUFFER_PTR;
-        EntityVertex.write(WRITE_PTR, pos0_x, pos0_y, pos0_z, c, vertices[4], vertices[5], overlay, l, n);
-        WRITE_PTR += EntityVertex.STRIDE;
-        EntityVertex.write(WRITE_PTR, pos1_x, pos1_y, pos1_z, c, vertices[STRIDE + 4], vertices[STRIDE + 5], overlay, l, n);
-        WRITE_PTR += EntityVertex.STRIDE;
-        EntityVertex.write(WRITE_PTR, pos2_x, pos2_y, pos2_z, c, vertices[STRIDE * 2 + 4], vertices[STRIDE * 2 + 5], overlay, l, n);
-        WRITE_PTR += EntityVertex.STRIDE;
-        EntityVertex.write(WRITE_PTR, pos3_x, pos3_y, pos3_z, c, vertices[STRIDE * 3 + 4], vertices[STRIDE * 3 + 5], overlay, l, n);
-        WRITE_PTR += EntityVertex.STRIDE;
-
-        BUFFER_PTR = WRITE_PTR;
+        BUFFER_PTR = P;
         BUFFED_VERTEX += VERTEX_COUNT;
         if (isBufferMax()) flush(writer);
     }
 
     private static void renderQuadList(PoseStack.Pose pose, VertexBufferWriter writer, int faces, List<BakedQuad> bakedQuads,
-                                       int light, int overlay, ItemStack itemStack, ItemColors itemColors) {
+                                       int light, int overlay, int packedColor) {
         for (BakedQuad bakedQuad : bakedQuads) {
             BakedQuadView quad = (BakedQuadView) bakedQuad;
             if ((faces & (1 << bakedQuad.getDirection().ordinal())) == 0) {
                 if (quad.getSprite() != null) SpriteUtil.INSTANCE.markSpriteActive(quad.getSprite());
                 continue;
             }
-            int color = 0xFFFFFFFF;
+            int color = packedColor;
             if (quad.hasColor()) {
-                color = ColorARGB.toABGR((itemColors.getColor(itemStack, quad.getColorIndex())));
+                color = ColorARGB.toABGR(quad.getColor(0));
             }
             putBulkData(writer, pose, bakedQuad, light, overlay, color, faces);
             if (quad.getSprite() != null) SpriteUtil.INSTANCE.markSpriteActive(quad.getSprite());
         }
     }
 
-    public static void render(SimpleBakedModel model, int faces, ItemStack itemStack, int packedLight, int packedOverlay,
-                              PoseStack poseStack, VertexBufferWriter writer, ItemColors itemColors) {
+    public static void render(List<BakedQuad> quads, int faces, int packedLight, int packedOverlay,
+                              PoseStack poseStack, VertexBufferWriter writer) {
         PoseStack.Pose pose = poseStack.last();
-
-        for (Direction direction : Direction.values()) {
-            renderQuadList(pose, writer, faces, model.getQuads(null, direction, null), packedLight, packedOverlay, itemStack, itemColors);
-        }
-        renderQuadList(pose, writer, faces, model.getQuads(null, null, null), packedLight, packedOverlay, itemStack, itemColors);
-
+        renderQuadList(pose, writer, faces, quads, packedLight, packedOverlay, 0xFFFFFFFF);
         flush(writer);
     }
 }
