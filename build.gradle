@@ -11,25 +11,20 @@ base {
 }
 
 repositories {
-	// CaffeineMC Maven for Sodium
-	maven {
-		name = "CaffeineMC"
-		url = uri("https://maven.caffeinemc.net/releases")
+	// Modrinth Maven (for Sodium and Iris via Modrinth)
+	exclusiveContent {
+		forRepository {
+			maven {
+				name = "Modrinth"
+				url = uri("https://api.modrinth.com/maven")
+			}
+		}
+		filter {
+			includeGroup "maven.modrinth"
+		}
 	}
 
-	// Iris Maven for Iris Shaders
-	maven {
-		name = "Iris"
-		url = uri("https://maven.irisshaders.dev/releases")
-	}
-
-	// Modrinth Maven (fallback for both)
-	maven {
-		name = "Modrinth"
-		url = uri("https://api.modrinth.com/maven")
-	}
-
-	// Fabric Maven for Fabric API and MixinExtras
+	// Fabric Maven for Fabric API, MixinExtras, and Loom dependencies
 	maven {
 		name = "Fabric"
 		url = uri("https://maven.fabricmc.net/")
@@ -70,11 +65,11 @@ dependencies {
 	// MixinExtras from Fabric Maven
 	implementation "io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}"
 
-	// Sodium from CaffeineMC Maven
-	implementation "net.caffeinemc:sodium-fabric:${project.sodium_version}"
+	// Sodium from Modrinth Maven (project slug: AANobbMI, version ID: 2Yom1N68)
+	implementation "maven.modrinth:sodium:2Yom1N68"
 
-	// Iris from Iris Maven
-	implementation "net.irisshaders:iris-fabric:${project.iris_version}"
+	// Iris from Modrinth Maven (project slug: YL57xq9U, version ID: oaD6KQls)
+	implementation "maven.modrinth:iris:oaD6KQls"
 }
 
 processResources {
