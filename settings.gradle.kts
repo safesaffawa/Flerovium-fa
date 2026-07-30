@@ -11,12 +11,5 @@ pluginManagement {
 
 rootProject.name = "flerovium"
 
-gradle.includedBuild("sodium") {
-    dir = file("sodium")
-    name = "sodium"
-}
-
-gradle.includedBuild("iris") {
-    dir = file("iris")
-    name = "iris"
-}
+includeBuild("sodium")
+includeBuild("iris")
