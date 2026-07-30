@@ -17,7 +17,6 @@ repositories {
 
 loom {
     splitEnvironmentSourceSets()
-
     mods {
         create("flerovium") {
             sourceSet(sourceSets["main"])
@@ -27,10 +26,12 @@ loom {
 }
 
 dependencies {
+    // Minecraft 26.2 不需要 mappings，只保留这一行
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
-    modCompileOnly("maven.modrinth:sodium:2Yom1N68")
-    modCompileOnly("maven.modrinth:iris:oaD6KQls")
+    
+    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
+    compileOnly("maven.modrinth:sodium:2Yom1N68")
+    compileOnly("maven.modrinth:iris:oaD6KQls")
 }
 
 tasks.processResources {
@@ -42,13 +43,13 @@ tasks.processResources {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    options.release.set(21)
+    options.release.set(25) // 26.2 需要 Java 25
 }
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.jar {
