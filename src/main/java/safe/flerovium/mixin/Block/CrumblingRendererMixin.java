@@ -34,71 +34,89 @@ import java.util.SortedSet;
 
 @Mixin(value = LevelRenderer.class, remap = false)
 public abstract class CrumblingRendererMixin {
-    @Shadow @Final private Minecraft minecraft;
-    @Shadow @Nullable private ClientLevel level;
-    @Shadow @Final private RenderBuffers renderBuffers;
-    @Shadow public abstract Frustum getFrustum();
+
+    @Shadow
+    @Final
+    private Minecraft minecraft;
+
+    @Shadow
+    @Nullable
+    private ClientLevel level;
+
+    @Shadow
+    @Final
+    private RenderBuffers renderBuffers;
+
+    @Shadow
+    public abstract Frustum getFrustum();
 
     @Redirect(
-        method = "renderLevel",
-        at = @At(
-            value = "INVOKE",
-            target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;"
-        )
+            method = "renderLevel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;"
+            )
     )
-    private ObjectSet>> redirectBlockDestruction(
-        Long2ObjectMap> instance,
-        PoseStack poseStack,
-        float tickDelta,
-        long limitTime,
-        boolean renderBlockOutline,
-        Camera camera,
-        GameRenderer gameRenderer,
-        LightTexture lightTexture,
-        Matrix4f frustumMatrix
+    private ObjectSet<Long2ObjectMap.Entry<SortedSet<BlockDestructionProgress>>> fasterBlockBreakingRendering(
+            Long2ObjectMap<SortedSet<BlockDestructionProgress>> instance,
+            DeltaTracker deltaTracker,
+            boolean renderBlockOutline,
+            Camera camera,
+            GameRenderer gameRenderer,
+            LightTexture lightTexture,
+            Matrix4f frustumMatrix,
+            Matrix4f projectionMatrix
     ) {
         Vec3 camPos = camera.getPosition();
-        ObjectSet>> newSet = new ObjectOpenHashSet<>();
-        Frustum frustum = getFrustum();
+        ObjectSet<Long2ObjectMap.Entry<SortedSet<BlockDestructionProgress>>> newSet = new ObjectOpenHashSet<>();
+        Frustum frustum = this.getFrustum();
+        PoseStack poseStack = new PoseStack();
 
-        for (var entry : instance.long2ObjectEntrySet()) {
+        for (Long2ObjectMap.Entry<SortedSet<BlockDestructionProgress>> entry : instance.long2ObjectEntrySet()) {
             BlockPos pos = BlockPos.of(entry.getLongKey());
-            float relX = (float)(pos.getX() - camPos.x());
-            float relY = (float)(pos.getY() - camPos.y());
-            float relZ = (float)(pos.getZ() - camPos.z());
+            SortedSet<BlockDestructionProgress> progressSet = entry.getValue();
+            if (progressSet == null || progressSet.isEmpty()) continue;
 
-            if (Math.abs(relX) + Math.abs(relZ) > 65536) {
+            float relX = (float) (pos.getX() - camPos.x);
+            float relY = (float) (pos.getY() - camPos.y);
+            float relZ = (float) (pos.getZ() - camPos.z);
+
+            if (Mth.abs(relX) + Mth.abs(relZ) > 65536) {
                 newSet.add(entry);
                 continue;
             }
 
-            if (!frustum.isVisible(pos)) continue;
+            if (!frustum.isVisible(pos)) {
+                continue;
+            }
 
-            SortedSet progressSet = entry.getValue();
-            if (progressSet.isEmpty()) continue;
-            
-            BlockDestructionProgress progress = progressSet.last();
-            int stage = progress.getProgress();
+            int stage = progressSet.last().getProgress();
             if (stage < 0 || stage >= ModelBakery.DESTROY_TYPES.size()) continue;
 
-            VertexConsumer consumer = renderBuffers.crumblingBufferSource()
-                .getBuffer(ModelBakery.DESTROY_TYPES.get(stage));
-            
-            PoseStack.Pose last = poseStack.last();
+            VertexConsumer consumer = this.renderBuffers
+                    .crumblingBufferSource()
+                    .getBuffer(ModelBakery.DESTROY_TYPES.get(stage));
+
+            poseStack.pushPose();
+            poseStack.translate(relX, relY, relZ);
+
             VertexConsumer decal = new BlockBreakingDecalGenerator(consumer, relX, relY, relZ);
-            ModelData modelData = level.getModelData(pos);
+            ModelData modelData = this.level.getModelData(pos);
 
             BlockBreakingRenderer.renderBreakingTexture(
-                minecraft.getBlockRenderer(),
-                camPos,
-                level.getBlockState(pos),
-                pos,
-                level,
-                poseStack,
-                decal,
-                modelData
+                    this.minecraft.getBlockRenderer(),
+                    camPos,
+                    this.level.getBlockState(pos),
+                    pos,
+                    this.level,
+                    poseStack,
+                    decal,
+                    modelData
             );
+
+            poseStack.popPose();
         }
+
         return newSet;
     }
 }
