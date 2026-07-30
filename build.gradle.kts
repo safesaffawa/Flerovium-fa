@@ -26,10 +26,22 @@ loom {
 }
 
 dependencies {
-    // Minecraft 26.2 不需要 mappings，只保留这一行
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     
-    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
+    // 添加 Fabric Loader（提供 FabricLoader API）
+    modImplementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}") {
+        isTransitive = false // 防止重复依赖
+    }
+    
+    // Fabric API
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
+    
+    // Mixin（显式添加，确保编译时可用）
+    compileOnly("org.spongepowered:mixin:0.8.5") {
+        isTransitive = false
+    }
+    
+    // 其他依赖
     compileOnly("maven.modrinth:sodium:2Yom1N68")
     compileOnly("maven.modrinth:iris:oaD6KQls")
 }
