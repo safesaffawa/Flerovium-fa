@@ -14,6 +14,3 @@ pluginManagement {
 }
 
 rootProject.name = "flerovium"
-
-includeBuild("sodium")
-includeBuild("iris")

@@ -12,7 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      # 只需检出 Flerovium-fa（包含 sodium 和 iris 子目录）
       - name: checkout repository
         uses: actions/checkout@v6
 
