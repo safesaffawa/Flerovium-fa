@@ -27,13 +27,13 @@ loom {
 
 dependencies {
     // Minecraft
-    "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
+    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     
     // Fabric API
-    "modImplementation"("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 
-    "modCompileOnly"("maven.modrinth:sodium:2Yom1N68")
-    "modCompileOnly"("maven.modrinth:iris:oaD6KQls")
+    modCompileOnly("maven.modrinth:sodium:2Yom1N68")
+    modCompileOnly("maven.modrinth:iris:oaD6KQls")
 }
 
 tasks.processResources {
