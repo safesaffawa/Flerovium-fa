@@ -1,0 +1,34 @@
+name: build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      # 只需检出 Flerovium-fa（包含 sodium 和 iris 子目录）
+      - name: checkout repository
+        uses: actions/checkout@v6
+
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v6
+
+      - name: setup jdk
+        uses: actions/setup-java@v5
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+
+      - name: build
+        run: ./gradlew build --no-daemon
+
+      - name: capture build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: Flerovium-fabric-26.2
+          path: build/libs/

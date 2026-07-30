@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "safe.flerovium.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "safe.flerovium.MixinPlugin",
+  "mixins": [
+    "Entity.EntityRendererMixin",
+    "Entity.ModelCuboidAccessor"
+  ],
+  "client": [
+    "Block.CrumblingRendererMixin",
+    "Item.ItemEntityRenderMixin",
+    "Item.ItemRendererMixin",
+    "Item.ItemTransformMixin",
+    "Item.SimpleBakedModelMixin",
+    "Particle.CampfireSmokeParticleMixin",
+    "Particle.ParticleAccessor",
+    "Particle.ParticleEngineMixin",
+    "Particle.ParticleMixin",
+    "Particle.ReduceTerrainParticlesMixin",
+    "Particle.SingleQuadParticleMixin",
+    "Sound.ClientLevelMixin",
+    "Sound.SoundEngineMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

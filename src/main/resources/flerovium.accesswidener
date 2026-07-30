@@ -1,0 +1,20 @@
+accessible class net/minecraft/client/Minecraft
+accessible field net/minecraft/client/Minecraft clientTickCount I
+
+accessible field com/mojang/blaze3d/systems/RenderSystem modelViewMatrix Lorg/joml/Matrix4f;
+
+accessible field net/minecraft/client/particle/Particle x D
+accessible field net/minecraft/client/particle/Particle y D
+accessible field net/minecraft/client/particle/Particle z D
+accessible field net/minecraft/client/particle/Particle bbWidth F
+accessible field net/minecraft/client/particle/Particle bbHeight F
+
+accessible field net/minecraft/client/renderer/culling/Frustum camX D
+accessible field net/minecraft/client/renderer/culling/Frustum camY D
+accessible field net/minecraft/client/renderer/culling/Frustum camZ D
+accessible field net/minecraft/client/renderer/culling/Frustum intersection Lnet/minecraft/world/phys/AABB;
+
+accessible field com/mojang/blaze3d/vertex/BufferBuilder format Lcom/mojang/blaze3d/vertex/VertexFormat;
+
+accessible field com/mojang/blaze3d/audio/Library staticChannels Lcom/mojang/blaze3d/audio/Library$ChannelPool;
+accessible class com/mojang/blaze3d/audio/Library$ChannelPool

@@ -1,0 +1,84 @@
+plugins {
+	id 'fabric-loom' version "${loom_version}"
+	id 'maven-publish'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = "flerovium-fabric-${project.minecraft_version}"
+}
+
+repositories {
+	maven { url = "https://api.modrinth.com/maven" }
+}
+
+loom {
+	splitEnvironmentSourceSets()
+
+	mods {
+		"flerovium" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.client
+		}
+	}
+
+	accessWidenerPath = file("src/main/resources/flerovium.accesswidener")
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+	modImplementation include("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")
+
+	// Sodium 0.9.1+mc26.2 from composite build (D:\newmod\sodium-mc26.2-0.9.1)
+	modImplementation "net.caffeinemc:sodium-fabric:${project.sodium_version}"
+
+	// Iris 1.11.2+mc26.2 from composite build (D:\newmod\Iris-26.2)
+	modImplementation "net.irisshaders:iris-fabric:${project.iris_version}"
+}
+
+processResources {
+	def replaceProperties = [
+			version          : project.version,
+			minecraft_version: project.minecraft_version,
+			loader_version   : project.loader_version
+	]
+	inputs.properties replaceProperties
+
+	filesMatching(["fabric.mod.json"]) {
+		expand replaceProperties
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.release = 25
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+}
+
+jar {
+	def projectName = project.name
+	inputs.property "projectName", projectName
+
+	from("LICENSE") {
+		rename { "${it}_$projectName" }
+	}
+}
+
+publishing {
+	publications {
+		create("mavenJava", MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {}
+}
