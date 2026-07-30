@@ -7,13 +7,9 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
-    // Minecraft JAR (Loom stores it here)
-    maven {
-        name = "Minecraft"
-        url = uri("https://libraries.minecraft.net/")
-    }
+    mavenCentral()
 
-    // Modrinth Maven (for Sodium and Iris)
+    // Modrinth Maven (Sodium / Iris)
     exclusiveContent {
         forRepository {
             maven {
@@ -28,34 +24,31 @@ repositories {
 }
 
 loom {
-    splitEnvironmentSourceSets()
-
     mods {
         "flerovium" {
             sourceSet sourceSets.main
-            sourceSet sourceSets.client
         }
     }
 }
 
 dependencies {
-    // To change the versions see the gradle.properties file
+    // Minecraft
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
     // Fabric Loader
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    // MixinExtras
-    implementation "io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}"
+    // MixinExtras（打包进 jar + 注解处理）
+    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")))
 
-    // Sodium from Modrinth Maven (project slug: AANobbMI, version ID: 2Yom1N68)
-    implementation "maven.modrinth:sodium:2Yom1N68"
+    // Sodium（仅编译引用，不打包）
+    modCompileOnly "maven.modrinth:sodium:2Yom1N68"
 
-    // Iris from Modrinth Maven (project slug: YL57xq9U, version ID: oaD6KQls)
-    implementation "maven.modrinth:iris:oaD6KQls"
+    // Iris（仅编译引用，不打包）
+    modCompileOnly "maven.modrinth:iris:oaD6KQls"
 }
 
 processResources {
@@ -69,6 +62,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 25
+    it.options.encoding = "UTF-8"
 }
 
 java {
