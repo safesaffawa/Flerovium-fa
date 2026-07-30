@@ -42,6 +42,12 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
     }
 
     @Override
+    public VertexConsumer setColor(int red, int green, int blue, int alpha) {
+        this.delegate.setColor(-1);
+        return this;
+    }
+
+    @Override
     public VertexConsumer setColor(int color) {
         this.delegate.setColor(-1);
         return this;
