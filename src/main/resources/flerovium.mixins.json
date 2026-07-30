@@ -9,7 +9,6 @@
     "Entity.ModelCuboidAccessor"
   ],
   "client": [
-    "Block.BlockEntityRendererMixin",
     "Block.CrumblingRendererMixin",
     "Item.BufferBuilderEntityFastMixin",
     "Item.ItemEntityRenderMixin",

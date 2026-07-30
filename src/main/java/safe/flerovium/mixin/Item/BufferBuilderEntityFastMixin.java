@@ -24,14 +24,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * This mixin extends the fast path to entity format (items in hand, on ground, in frames).
  */
 @Mixin(value = BufferBuilder.class, priority = 1500)
-public abstract class BufferBuilderEntityFastMixin implements VertexConsumer {
+public abstract class BufferBuilderEntityFastMixin {
     @Shadow
     @Final
     private boolean entityFormat;
-
-    @Shadow
-    @Final
-    private boolean blockFormat;
 
     @Inject(method = "putBakedQuad", at = @At("HEAD"), cancellable = true, require = 0)
     private void fastEntityPutBakedQuad(PoseStack.Pose pose, BakedQuad quad, QuadInstance instance, CallbackInfo ci) {
@@ -41,7 +37,7 @@ public abstract class BufferBuilderEntityFastMixin implements VertexConsumer {
         // Iris uses extended vertex format, skip fast path (let Iris handle it)
         if (this.getClass().getName().contains("Iris")) return;
 
-        VertexBufferWriter writer = VertexBufferWriter.of(this);
+        VertexBufferWriter writer = VertexBufferWriter.of((VertexConsumer) (Object) this);
         if (writer == null) return;
 
         BakedQuadView quadX = (BakedQuadView) (Object) quad;
