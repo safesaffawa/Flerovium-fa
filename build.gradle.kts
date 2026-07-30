@@ -1,15 +1,16 @@
 plugins {
-    id ("net.fabricmc.fabric-loom") version "1.17-SNAPSHOT"
-    id ("maven-publish")
+    id("fabric-loom") version "1.17-SNAPSHOT"
+    id("maven-publish")
 }
 
-version = project.mod_version
-group = project.maven_group
+version = project.property("mod_version") as String
+group = project.property("maven_group") as String
+
+base {
+    archivesName.set(project.name)
+}
 
 repositories {
-    mavenCentral()
-
-    // Modrinth Maven (Sodium / Iris)
     exclusiveContent {
         forRepository {
             maven {
@@ -18,73 +19,76 @@ repositories {
             }
         }
         filter {
-            includeGroup "maven.modrinth"
+            includeGroup("maven.modrinth")
         }
     }
 }
 
 loom {
-    mods {
-        "flerovium" {
-            sourceSet sourceSets.main
+    runs {
+        named("client") {
+            // 如果需要指定 sourceSet
+        }
+        named("server") {
+            // 如果需要指定 sourceSet
         }
     }
 }
 
 dependencies {
     // Minecraft
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
+    "mappings"("net.fabricmc:yarn:${project.property("yarn_mappings")}:v2")
 
-    // Fabric Loader
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // ⚠️ 不要手动添加 fabric-loader，Loom 会自动管理！
+    // modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")  // ❌ 已注释
 
     // Fabric API
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    "modImplementation"("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 
-    // MixinExtras（打包进 jar + 注解处理）
-    include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")))
-
-    // Sodium（仅编译引用，不打包）
-    modCompileOnly "maven.modrinth:sodium:2Yom1N68"
-
-    // Iris（仅编译引用，不打包）
-    modCompileOnly "maven.modrinth:iris:oaD6KQls"
+    // 第三方模组依赖（编译时可选）
+    "modCompileOnly"("maven.modrinth:sodium:2Yom1N68")
+    "modCompileOnly"("maven.modrinth:iris:oaD6KQls")
 }
 
-processResources {
-    def version = project.version
-    inputs.property "version", version
+tasks.processResources {
+    val version = project.version.toString()
+    inputs.property("version", version)
 
     filesMatching("fabric.mod.json") {
-        expand "version": version
+        expand(mapOf("version" to version))
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
-    it.options.encoding = "UTF-8"
+// 如果有其他自定义任务处理 projectName，可以类似这样写：
+// tasks.register("yourCustomTask") {
+//     val projectName = project.name
+//     inputs.property("projectName", projectName)
+// }
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release.set(21)
 }
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-jar {
-    def projectName = project.name
-    inputs.property "projectName", projectName
-
+tasks.jar {
     from("LICENSE") {
-        rename { "${it}_$projectName" }
+        rename { "${it}_${base.archivesName.get()}" }
     }
 }
 
 publishing {
     publications {
-        create("mavenJava", MavenPublication) {
-            from components.java
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
         }
     }
-    repositories {}
+    repositories {
+        // 如果需要发布到仓库，在这里添加
+    }
 }
