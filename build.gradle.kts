@@ -28,10 +28,8 @@ loom {
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     
-    // Fabric Loader - 使用 implementation
-    implementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
+    implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     
-    // Fabric API - 使用 implementation
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
     
     // Mixin 依赖 - 使用 compileOnly
