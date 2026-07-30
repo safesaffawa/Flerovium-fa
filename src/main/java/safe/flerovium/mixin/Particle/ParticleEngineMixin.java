@@ -26,6 +26,6 @@ public abstract class ParticleEngineMixin {
         float min = Math.min(width, height);
         float radius = (max + 0.4142f * min) * 0.5f;
 
-        return instance.intersection.testSphere(x, y, z, radius);
+        return instance.isVisible(aabb);
     }
 }

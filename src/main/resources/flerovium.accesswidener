@@ -11,7 +11,6 @@ accessible field net/minecraft/client/particle/Particle bbHeight F
 accessible field net/minecraft/client/renderer/culling/Frustum camX D
 accessible field net/minecraft/client/renderer/culling/Frustum camY D
 accessible field net/minecraft/client/renderer/culling/Frustum camZ D
-accessible field net/minecraft/client/renderer/culling/Frustum intersection Lnet/minecraft/world/phys/AABB;
 
 accessible field com/mojang/blaze3d/vertex/BufferBuilder format Lcom/mojang/blaze3d/vertex/VertexFormat;
 
