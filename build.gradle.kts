@@ -29,8 +29,6 @@ dependencies {
     // Minecraft
     "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
     
-    "mappings"(loom.officialMojangMappings())
-
     // Fabric API
     "modImplementation"("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
 
