@@ -27,15 +27,9 @@ loom {
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
-    
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
-    
-    // Mixin 依赖 - 使用 compileOnly
     compileOnly("org.spongepowered:mixin:0.8.5")
-    
-    // 其他依赖
     compileOnly("maven.modrinth:sodium:2Yom1N68")
     compileOnly("maven.modrinth:iris:oaD6KQls")
 }
