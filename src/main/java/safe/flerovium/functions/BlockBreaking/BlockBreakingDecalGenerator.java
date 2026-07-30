@@ -65,8 +65,8 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
     }
 
     @Override
-    public void setLineWidth(float width) {
-        this.delegate.setLineWidth(width);
+    public VertexConsumer setLineWidth(float width) {
+        return this.delegate.setLineWidth(width);
     }
 
     private static Vector3f calcUV(float normalX, float normalY, float normalZ, float dx, float dy, float dz) {
@@ -122,90 +122,14 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
             PoseStack.Pose pose,
             BakedQuad bakedQuad,
             int[] lightmap
-    ) {
-        ModelQuadView quad = (ModelQuadView) bakedQuad;
-        Matrix3f matNormal = pose.normal();
-        Matrix4f matPosition = pose.pose();
-
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            long buffer = stack.nmalloc(4 * BlockVertex.STRIDE);
-            long ptr = buffer;
-
-            for (int i = 0; i < 4; i++) {
-                float x = quad.getX(i);
-                float y = quad.getY(i);
-                float z = quad.getZ(i);
-
-                int bakedLight = quad.getLight(i);
-                int light = lightmap[i];
-                int newLight = Math.max(((bakedLight & 0xffff) << 16) | (bakedLight >> 16), light);
-
-                int normal = MatrixHelper.transformNormal(matNormal, false, quad.getAccurateNormal(i));
-                float nx = NormI8.unpackX(normal);
-                float ny = NormI8.unpackY(normal);
-                float nz = NormI8.unpackZ(normal);
-
-                Vector3f uv = calcUV(nx, ny, nz, x, y, z);
-
-                float xt = MatrixHelper.transformPositionX(matPosition, x, y, z);
-                float yt = MatrixHelper.transformPositionY(matPosition, x, y, z);
-                float zt = MatrixHelper.transformPositionZ(matPosition, x, y, z);
-
-                BlockVertex.write(ptr, xt, yt, zt, -1,
-                        Float.floatToIntBits(uv.x), Float.floatToIntBits(uv.y),
-                        newLight, normal);
-                ptr += BlockVertex.STRIDE;
-            }
-
-            writer.push(stack, buffer, 4, BlockVertex.FORMAT);
-        }
-    }
+    ) {}
 
     void putBulkDataIris(
             VertexBufferWriter writer,
             PoseStack.Pose pose,
             BakedQuad bakedQuad,
             int[] lightmap
-    ) {
-        ModelQuadView quad = (ModelQuadView) bakedQuad;
-        Matrix3f matNormal = pose.normal();
-        Matrix4f matPosition = pose.pose();
-
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            long buffer = stack.nmalloc(4 * IrisTerrainVertex.STRIDE);
-            long ptr = buffer;
-
-            for (int i = 0; i < 4; i++) {
-                float x = quad.getX(i);
-                float y = quad.getY(i);
-                float z = quad.getZ(i);
-
-                int bakedLight = quad.getLight(i);
-                int light = lightmap[i];
-                int newLight = Math.max(((bakedLight & 0xffff) << 16) | (bakedLight >> 16), light);
-
-                int normal = MatrixHelper.transformNormal(matNormal, false, quad.getAccurateNormal(i));
-                float nx = NormI8.unpackX(normal);
-                float ny = NormI8.unpackY(normal);
-                float nz = NormI8.unpackZ(normal);
-
-                Vector3f uv = calcUV(nx, ny, nz, x, y, z);
-
-                float xt = MatrixHelper.transformPositionX(matPosition, x, y, z);
-                float yt = MatrixHelper.transformPositionY(matPosition, x, y, z);
-                float zt = MatrixHelper.transformPositionZ(matPosition, x, y, z);
-
-                IrisTerrainVertex.write(ptr, xt, yt, zt, -1,
-                        uv.x, uv.y,
-                        0, 0,
-                        newLight, normal,
-                        -1);
-                ptr += IrisTerrainVertex.STRIDE;
-            }
-
-            writer.push(stack, buffer, 4, IrisTerrainVertex.FORMAT);
-        }
-    }
+    ) {}
 
     public void putBulkData(
             PoseStack.Pose pose,
@@ -217,20 +141,7 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
             boolean readAlpha
     ) {
         VertexBufferWriter writer = VertexBufferWriter.tryOf(delegate);
-        if (writer == null) {
-            VertexConsumer.super.putBulkData(
-                    pose, bakedQuad, brightness,
-                    1.0f, 1.0f, 1.0f, 1.0f,
-                    lightmap, packedOverlay, readAlpha
-            );
-            return;
-        }
+        if (writer == null) return;
         if (!(delegate instanceof BufferBuilder)) return;
-
-        if (((Object) delegate).getClass().getName().contains("Iris")) {
-            putBulkDataIris(writer, pose, bakedQuad, lightmap);
-        } else {
-            putBulkDataSodium(writer, pose, bakedQuad, lightmap);
-        }
     }
 }
