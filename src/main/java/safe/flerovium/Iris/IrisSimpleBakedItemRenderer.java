@@ -15,10 +15,6 @@ public class IrisSimpleBakedItemRenderer {
     private static final long SCRATCH_BUFFER = MemoryUtil.nmemAlignedAlloc(64, BUFFER_VERTEX_COUNT * IrisEntityVertex.STRIDE);
     private static long BUFFER_PTR = SCRATCH_BUFFER;
     private static int BUFFED_VERTEX = 0;
-    private static final Vector2f uv0 = new Vector2f();
-    private static final Vector2f uv1 = new Vector2f();
-    private static final Vector2f uv2 = new Vector2f();
-    private static final Vector2f uv3 = new Vector2f();
 
     private static void putBulkData(VertexBufferWriter writer, PoseStack.Pose pose, BakedQuad bakedQuad, int light,
                                     int overlay, int color, int faces) {

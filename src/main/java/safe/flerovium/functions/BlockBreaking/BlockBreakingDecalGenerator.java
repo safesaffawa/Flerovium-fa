@@ -65,6 +65,12 @@ public class BlockBreakingDecalGenerator implements VertexConsumer {
     }
 
     @Override
+    public VertexConsumer setUv2(int u, int v) {
+        this.delegate.setUv2(u, v);
+        return this;
+    }
+
+    @Override
     public VertexConsumer setLineWidth(float width) {
         return this.delegate.setLineWidth(width);
     }
