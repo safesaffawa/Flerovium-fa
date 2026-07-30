@@ -23,7 +23,6 @@ loom {
         // 这里可以配置 refmap 名称等
         // defaultRefmapName.set("mixins.flerovium.refmap.json")
     }
-}
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
