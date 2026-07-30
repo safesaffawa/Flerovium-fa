@@ -38,10 +38,9 @@ loom {
 dependencies {
     // Minecraft
     "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
-    "mappings"("net.fabricmc:yarn:${project.property("minecraft_version")}:v2")
-
-    // ⚠️ 不要手动添加 fabric-loader，Loom 会自动管理！
-    // modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")  // ❌ 已注释
+    
+    // 👇 必须使用 Mojang 官方映射！绝对不能有 yarn 字眼！
+    "mappings"(loom.officialMojangMappings())
 
     // Fabric API
     "modImplementation"("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
