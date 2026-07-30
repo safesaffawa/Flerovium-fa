@@ -1,4 +1,4 @@
-classTweaker v2 indigo
+classTweaker v2 official
 accessible class net/minecraft/client/Minecraft
 accessible field net/minecraft/client/Minecraft clientTickCount I
 
