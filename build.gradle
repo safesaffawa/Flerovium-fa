@@ -7,6 +7,12 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    // Minecraft JAR (Loom stores it here)
+    maven {
+        name = "Minecraft"
+        url = uri("https://libraries.minecraft.net/")
+    }
+
     // Modrinth Maven (for Sodium and Iris)
     exclusiveContent {
         forRepository {
