@@ -9,12 +9,13 @@
     "Entity.ModelCuboidAccessor"
   ],
   "client": [
+    "Block.BlockEntityRendererMixin",
     "Block.CrumblingRendererMixin",
+    "Item.BufferBuilderEntityFastMixin",
     "Item.ItemEntityRenderMixin",
     "Item.ItemRendererMixin",
     "Particle.CampfireSmokeParticleMixin",
     "Particle.ParticleAccessor",
-    "Particle.ParticleMixin",
     "Particle.SingleQuadParticleMixin",
     "Sound.ClientLevelMixin",
     "Sound.SoundEngineMixin"

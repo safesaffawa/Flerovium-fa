@@ -44,12 +44,9 @@ public class MixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         return switch (mixinClassName) {
             case "safe.flerovium.mixin.Entity.EntityRendererMixin",
-                 "safe.flerovium.mixin.Entity.ModelCuboidAccessor" ->
+                 "safe.flerovium.mixin.Entity.ModelCuboidAccessor",
+                 "safe.flerovium.mixin.Item.BufferBuilderEntityFastMixin" ->
                     isVersionAllowed("sodium", ">=0.7.0");
-            case "safe.flerovium.mixin.Particle.ReduceTerrainParticlesMixin" ->
-                    Flerovium.config.reduceTerrainParticles && !doModExist("simulated");
-            case "safe.flerovium.mixin.Particle.ParticleEngineMixin" ->
-                    !doModExist("asyncparticles") && !doModExist("particle_core");
             case "safe.flerovium.mixin.Particle.SingleQuadParticleMixin" -> !doModExist("asyncparticles");
             case "safe.flerovium.mixin.Sound.ClientLevelMixin" -> !doModExist("simulated");
             case "safe.flerovium.mixin.Block.CrumblingRendererMixin" -> Flerovium.config.fastBreakingTexture;
