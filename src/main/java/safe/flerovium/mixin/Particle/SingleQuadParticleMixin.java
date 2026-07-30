@@ -19,11 +19,17 @@ public abstract class SingleQuadParticleMixin extends Particle {
         super(level, x, y, z);
     }
 
-    @Override
-    protected int getLightColor(float partialTick) {
+    @Inject(method = "getLightColor", at = @At("HEAD"), cancellable = true, require = 0)
+    private void cacheLightColor(float partialTick, CallbackInfoReturnable<Integer> cir) {
         long tick = Minecraft.getInstance().clientTickCount;
-        if (tick == flerovium$lastTick) return flerovium$cachedLight;
-        flerovium$lastTick = tick;
-        return flerovium$cachedLight = super.getLightColor(partialTick);
+        if (tick == flerovium$lastTick) {
+            cir.setReturnValue(flerovium$cachedLight);
+        }
+    }
+
+    @Inject(method = "getLightColor", at = @At("RETURN"), require = 0)
+    private void cacheLightColorReturn(float partialTick, CallbackInfoReturnable<Integer> cir) {
+        flerovium$lastTick = Minecraft.getInstance().clientTickCount;
+        flerovium$cachedLight = cir.getReturnValue();
     }
 }
