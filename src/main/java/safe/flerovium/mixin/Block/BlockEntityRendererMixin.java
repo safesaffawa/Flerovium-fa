@@ -3,6 +3,7 @@ package safe.flerovium.mixin.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,7 +20,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class BlockEntityRendererMixin {
 
     @Inject(method = "tryExtractRenderState", at = @At("HEAD"), cancellable = true, require = 0)
-    private void skipFarBlockEntities(BlockEntity blockEntity, float tickDelta, Object crumblingOverlay,
+    private void skipFarBlockEntities(BlockEntity blockEntity, float tickDelta,
+                                       ModelFeatureRenderer.CrumblingOverlay crumblingOverlay,
                                        boolean global, CallbackInfoReturnable<BlockEntityRenderState> cir) {
         var cam = Minecraft.getInstance().gameRenderer.mainCamera().position();
         var pos = blockEntity.getBlockPos();
