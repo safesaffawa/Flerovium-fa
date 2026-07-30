@@ -20,7 +20,7 @@
 			"safe.flerovium.Flerovium"
 		],
 		"client": [
-			"safe.flerovium.client.FleroviumClient"
+			"safe.flerovium.FleroviumClient"
 		]
 	},
 	"mixins": [
