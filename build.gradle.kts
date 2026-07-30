@@ -16,8 +16,8 @@ repositories {
 }
 
 loom {
-
-    }
+    accessWidenerPath = file("src/main/resources/flerovium.accesswidener")
+}
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
