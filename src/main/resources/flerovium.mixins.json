@@ -13,7 +13,6 @@
     "Item.ItemEntityRenderMixin",
     "Item.ItemRendererMixin",
     "Item.ItemTransformMixin",
-    "Item.SimpleBakedModelMixin",
     "Particle.CampfireSmokeParticleMixin",
     "Particle.ParticleAccessor",
     "Particle.ParticleEngineMixin",
