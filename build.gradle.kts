@@ -1,5 +1,3 @@
-import net.fabricmc.loom.api.LoomGradleExtension
-
 plugins {
     id("fabric-loom") version "1.17-SNAPSHOT"
     id("maven-publish")
