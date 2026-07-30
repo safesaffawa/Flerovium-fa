@@ -14,9 +14,7 @@
     "Item.ItemRendererMixin",
     "Particle.CampfireSmokeParticleMixin",
     "Particle.ParticleAccessor",
-    "Particle.ParticleEngineMixin",
     "Particle.ParticleMixin",
-    "Particle.ReduceTerrainParticlesMixin",
     "Particle.SingleQuadParticleMixin",
     "Sound.ClientLevelMixin",
     "Sound.SoundEngineMixin"
