@@ -12,6 +12,8 @@ base {
 
 repositories {
 	maven { url = uri("https://api.modrinth.com/maven") }
+	maven { url = uri("https://maven.fabricmc.net/") }
+	maven { url = uri("https://libraries.minecraft.net/") }
 }
 
 loom {
@@ -35,11 +37,11 @@ dependencies {
 
 	modImplementation include("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")
 
-	// Sodium 0.9.1+mc26.2 from composite build (D:\newmod\sodium-mc26.2-0.9.1)
-	modImplementation "net.caffeinemc:sodium-fabric:${project.sodium_version}"
+	// Sodium from composite build - Gradle will resolve to the locally-built artifact
+	modImplementation "net.caffeinemc:sodium-fabric:0.9.1+mc26.2"
 
-	// Iris 1.11.2+mc26.2 from composite build (D:\newmod\Iris-26.2)
-	modImplementation "net.irisshaders:iris-fabric:${project.iris_version}"
+	// Iris from composite build - Gradle will resolve to the locally-built artifact
+	modImplementation "net.irisshaders:iris-fabric:1.11.2+mc26.2"
 }
 
 processResources {
