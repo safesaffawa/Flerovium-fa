@@ -29,11 +29,12 @@ dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
-    compileOnly("org.spongepowered:mixin:0.8.5")
+    // compileOnly("org.spongepowered:mixin:0.8.5")
+    annotationProcessor("org.spongepowered:mixin:0.8.7")
+    compileOnly("org.spongepowered:mixin:0.8.7")
     compileOnly("maven.modrinth:sodium:2Yom1N68")
     compileOnly("maven.modrinth:iris:oaD6KQls")
 }
-
 tasks.processResources {
     val version = project.version.toString()
     inputs.property("version", version)
