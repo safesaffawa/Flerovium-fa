@@ -30,18 +30,23 @@ loom {
 }
 
 dependencies {
+	// To change the versions see gradle.properties
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	// 26.1+ is unobfuscated, no mappings needed
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	modImplementation include("io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}")
+	// Fabric Loader
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Sodium from composite build - Gradle will resolve to the locally-built artifact
-	modImplementation "net.caffeinemc:sodium-fabric:0.9.1+mc26.2"
+	// Fabric API
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-	// Iris from composite build - Gradle will resolve to the locally-built artifact
-	modImplementation "net.irisshaders:iris-fabric:1.11.2+mc26.2"
+	// MixinExtras
+	implementation "io.github.llamalad7:mixinextras-fabric:${project.mixin_extras_version}"
+
+	// Sodium from composite build
+	implementation "net.caffeinemc:sodium-fabric:${project.sodium_version}"
+
+	// Iris from composite build
+	implementation "net.irisshaders:iris-fabric:${project.iris_version}"
 }
 
 processResources {
