@@ -11,7 +11,7 @@ base {
 }
 
 repositories {
-	maven { url = "https://api.modrinth.com/maven" }
+	maven { url = uri("https://api.modrinth.com/maven") }
 }
 
 loom {
