@@ -23,15 +23,17 @@ loom {
             sourceSet(sourceSets["client"])
         }
     }
+    // 如果需要配置 Mixin 相关选项
+    mixin {
+        // 这里可以配置 refmap 名称等
+        // defaultRefmapName.set("mixins.flerovium.refmap.json")
+    }
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
-    // compileOnly("org.spongepowered:mixin:0.8.5")
-    annotationProcessor("org.spongepowered:mixin:0.8.7")
-    compileOnly("org.spongepowered:mixin:0.8.7")
     compileOnly("maven.modrinth:sodium:2Yom1N68")
     compileOnly("maven.modrinth:iris:oaD6KQls")
 }
