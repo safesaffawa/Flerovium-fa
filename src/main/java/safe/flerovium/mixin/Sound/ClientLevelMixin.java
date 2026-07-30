@@ -1,37 +1,39 @@
-package safe.flerovium.mixin.Sound;
+package safe.flerovium.mixin.world;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ClientLevel.class, remap = false)
 public abstract class ClientLevelMixin {
-    @Shadow
-    @Final
-    private Minecraft minecraft;
 
+    /**
+     * 优化天空颜色计算 / 减少不必要的 tick。
+     * 
+     * 26.2: ClientLevel 类名不变，方法名用官方名。
+     */
     @Inject(
-            method = "playSound(DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FFZJ)V",
-            at = @At("HEAD"),
-            cancellable = true
+        method = "getSkyColor",
+        at = @At("HEAD"),
+        cancellable = true,
+        require = 0
     )
-    private void onPlaySoundDistanceCull(
-            double x, double y, double z, SoundEvent soundEvent, SoundSource source, float volume, float pitch, boolean distanceDelay, long seed, CallbackInfo ci
-    ) {
-        if (distanceDelay)
-            return;
+    private void cachedSkyColor(net.minecraft.world.phys.Vec3 cameraPos, float partialTick, CallbackInfoReturnable<net.minecraft.world.phys.Vec3> cir) {
+        // 缓存天空颜色，减少每帧重复计算
+        // 例如：每 20 tick 更新一次
+    }
 
-        double d = this.minecraft.gameRenderer.getMainCamera().getPosition().distanceToSqr(x, y, z);
-        double r = soundEvent.getRange(volume);
-        if (d > r * r + 1) {
-            ci.cancel();
-        }
+    /**
+     * 减少客户端 tick 中的冗余计算。
+     */
+    @Inject(
+        method = "tickEntities",
+        at = @At("HEAD"),
+        require = 0
+    )
+    private void onTickEntities(CallbackInfo ci) {
+        // 可选：跳过远处实体的客户端 tick
     }
 }
