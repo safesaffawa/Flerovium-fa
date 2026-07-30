@@ -17,6 +17,12 @@ repositories {
 
 loom {
     splitEnvironmentSourceSets()
+    
+    // 显式禁用 mappings（26.2 不需要）
+    mappings {
+        // 故意留空
+    }
+    
     mods {
         create("flerovium") {
             sourceSet(sourceSets["main"])
@@ -26,9 +32,7 @@ loom {
 }
 
 dependencies {
-    // Minecraft 26.2 不需要 mappings，只保留这一行
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    
     implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
     compileOnly("maven.modrinth:sodium:2Yom1N68")
     compileOnly("maven.modrinth:iris:oaD6KQls")
@@ -43,7 +47,7 @@ tasks.processResources {
 }
 
 tasks.withType<JavaCompile>().configureEach {
-    options.release.set(25) // 26.2 需要 Java 25
+    options.release.set(25)
 }
 
 java {
