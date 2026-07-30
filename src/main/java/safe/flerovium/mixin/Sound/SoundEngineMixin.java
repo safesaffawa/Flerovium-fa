@@ -5,7 +5,7 @@ import net.minecraft.client.sounds.SoundEngine;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = SoundEngine.class, remap = false)
 public abstract class SoundEngineMixin {
@@ -13,7 +13,7 @@ public abstract class SoundEngineMixin {
     @Inject(method = "play", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/resources/sounds/SoundInstance;resolve(Lnet/minecraft/client/sounds/SoundManager;)Lnet/minecraft/client/sounds/WeighedSoundEvents;",
             shift = At.Shift.AFTER), cancellable = true, require = 0)
-    private void onPlaySound(SoundInstance sound, CallbackInfo ci) {
+    private void onPlaySound(SoundInstance sound, CallbackInfoReturnable<Void> cir) {
         var s = sound.getSound();
         if (s == null) return;
         if (s.shouldStream()) return;
