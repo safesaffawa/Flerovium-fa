@@ -28,10 +28,8 @@ public abstract class CampfireSmokeParticleMixin extends Particle {
      */
     @ModifyArgs(
         method = "tick",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/particle/CampfireSmokeParticle;move(DDD)V"
-        )
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/particle/CampfireSmokeParticle;move(DDD)V"),
+        require = 0
     )
     void beforeMove(Args args) {
         if (((ParticleAccessor) this).isStoppedByCollision()) {

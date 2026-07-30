@@ -12,7 +12,6 @@
     "Block.CrumblingRendererMixin",
     "Item.ItemEntityRenderMixin",
     "Item.ItemRendererMixin",
-    "Item.ItemTransformMixin",
     "Particle.CampfireSmokeParticleMixin",
     "Particle.ParticleAccessor",
     "Particle.ParticleEngineMixin",
