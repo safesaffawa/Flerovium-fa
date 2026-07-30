@@ -28,18 +28,14 @@ loom {
 dependencies {
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
     
-    // 添加 Fabric Loader（提供 FabricLoader API）
-    modImplementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}") {
-        isTransitive = false // 防止重复依赖
-    }
+    // Fabric Loader - 使用 implementation
+    implementation("net.fabricmc:fabric-loader:${project.property("fabric_loader_version")}")
     
-    // Fabric API
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
+    // Fabric API - 使用 implementation
+    implementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_api_version")}")
     
-    // Mixin（显式添加，确保编译时可用）
-    compileOnly("org.spongepowered:mixin:0.8.5") {
-        isTransitive = false
-    }
+    // Mixin 依赖 - 使用 compileOnly
+    compileOnly("org.spongepowered:mixin:0.8.5")
     
     // 其他依赖
     compileOnly("maven.modrinth:sodium:2Yom1N68")
