@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(value = ParticleEngine.class, remap = false)
 public abstract class ReduceTerrainParticlesMixin {
 
-    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "destroy", at = @At("HEAD"), cancellable = true, require = 0)
     void skipFarDestroy(BlockPos pos, BlockState state, CallbackInfo ci) {
         Minecraft client = Minecraft.getInstance();
         Camera cam = client.gameRenderer.mainCamera();
