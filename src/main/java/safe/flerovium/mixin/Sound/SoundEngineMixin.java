@@ -1,4 +1,4 @@
-package safe.flerovium.mixin.sound;
+package safe.flerovium.mixin.Sound;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
