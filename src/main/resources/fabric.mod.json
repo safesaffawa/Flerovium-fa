@@ -1,0 +1,33 @@
+{
+	"schemaVersion": 1,
+	"id": "flerovium",
+	"version": "${version}",
+	"name": "Flerovium",
+	"description": "Makes rendering faster — a Sodium optimization companion mod",
+	"authors": [
+		"MoePus",
+		"ported by safe"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/flerovium",
+		"sources": "https://github.com/MoePus/flerovium"
+	},
+	"license": "LGPL-3.0",
+	"icon": "assets/flerovium/icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"main": [
+			"com.safe.flerovium.Flerovium"
+		]
+	},
+	"mixins": [
+		"flerovium.mixins.json"
+	],
+	"accessWidener": "flerovium.accesswidener",
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"sodium": ">=0.7.0"
+	}
+}

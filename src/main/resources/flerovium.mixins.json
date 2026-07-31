@@ -1,0 +1,22 @@
+{
+	"required": true,
+	"minVersion": "0.8.5",
+	"package": "com.safe.flerovium.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"plugin": "com.safe.flerovium.MixinPlugin",
+	"mixins": [
+		"Entity.EntityRendererMixin",
+		"Entity.ModelCuboidAccessor"
+	],
+	"client": [
+		"Particle.CampfireSmokeParticleMixin",
+		"Particle.ParticleAccessor",
+		"Particle.ReduceTerrainParticlesMixin",
+		"Particle.SingleQuadParticleMixin",
+		"Sound.ClientLevelMixin",
+		"Sound.SoundEngineMixin"
+	],
+	"injectors": {
+		"defaultRequire": 0
+	}
+}

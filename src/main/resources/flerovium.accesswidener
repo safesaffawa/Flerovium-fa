@@ -1,0 +1,7 @@
+accessWidener v2 named
+
+# Make Minecraft.clientTickCount accessible for SingleQuadParticleMixin light cache
+accessible field net/minecraft/client/Minecraft clientTickCount J
+
+# Make Library.staticChannels accessible for SoundEngineMixin channel limiting
+accessible field com/mojang/blaze3d/audio/Library staticChannels Lcom/mojang/blaze3d/audio/Library$ChannelPool;
