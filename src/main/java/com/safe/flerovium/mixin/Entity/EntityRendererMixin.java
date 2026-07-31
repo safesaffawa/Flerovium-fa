@@ -133,7 +133,7 @@ public abstract class EntityRendererMixin {
       float c011z = c010z + vzz;
       setVertex(7, c011x, c011y, c011z, color);
       int cullingMask = ((ModelCuboidAccessor)cuboid).getCullMask();
-      if (matrices.pose().m32() <= -16.0F && Flerovium.config.entityBackFaceCulling && RenderSystem.getModelViewStack().last().pose().m32() == 0.0F) {
+      if (matrices.pose().m32() <= -16.0F && Flerovium.config.entityBackFaceCulling) {
          Matrix3f normal = matrices.normal();
          float posX = c000x + c011x;
          float posY = c000y + c011y;

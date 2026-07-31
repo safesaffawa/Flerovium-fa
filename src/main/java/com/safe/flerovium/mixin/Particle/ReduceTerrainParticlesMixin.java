@@ -27,7 +27,7 @@ public abstract class ReduceTerrainParticlesMixin {
    )
    void skipFarDestroy(BlockPos pos, BlockState state, CallbackInfo ci) {
       Minecraft client = Minecraft.getInstance();
-      Camera cam = client.gameRenderer.getCamera();
+      Camera cam = client.gameRenderer.mainCamera;
       Vec3 camPos = cam.position();
       Vec3 blockPos = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
       double dx = blockPos.x - camPos.x;

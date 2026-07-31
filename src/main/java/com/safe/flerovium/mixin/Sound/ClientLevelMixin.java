@@ -29,7 +29,7 @@ public abstract class ClientLevelMixin {
    )
    private void onPlaySoundDistanceCull(double x, double y, double z, SoundEvent soundEvent, SoundSource source, float volume, float pitch, boolean distanceDelay, long seed, CallbackInfo ci) {
       if (!distanceDelay) {
-         double d = this.minecraft.gameRenderer.getCamera().position().distanceToSqr(x, y, z);
+         double d = this.minecraft.gameRenderer.mainCamera.position().distanceToSqr(x, y, z);
          double r = (double)soundEvent.getRange(volume);
          if (d > r * r + (double)1.0F) {
             ci.cancel();
