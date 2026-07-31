@@ -1,12 +1,23 @@
 {
 	"required": true,
-	"package": "com.safe.flerovium.mixin",
+	"minVersion": "0.8.5",
+	"package": "com.safe.flerovium.mixins",
 	"compatibilityLevel": "JAVA_25",
+	"plugin": "com.safe.flerovium.MixinPlugin",
 	"mixins": [
-		"ExampleMixin"
+		"Entity.EntityRendererMixin",
+		"Entity.ModelCuboidAccessor"
+	],
+	"client": [
+		"Particle.CampfireSmokeParticleMixin",
+		"Particle.ParticleAccessor",
+		"Particle.ReduceTerrainParticlesMixin",
+		"Particle.SingleQuadParticleMixin",
+		"Sound.ClientLevelMixin",
+		"Sound.SoundEngineMixin"
 	],
 	"injectors": {
-		"defaultRequire": 1
+		"defaultRequire": 0
 	},
 	"overwrites": {
 		"requireAnnotations": true

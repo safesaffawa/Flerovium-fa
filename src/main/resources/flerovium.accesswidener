@@ -1,0 +1,13 @@
+accessWidener v1 official
+
+# Used by SingleQuadParticleMixin to cache light coords
+accessible field net/minecraft/client/Minecraft clientTickCount I
+
+# Accessed directly by mixins that extend Particle
+accessible field net/minecraft/client/particle/Particle x D
+accessible field net/minecraft/client/particle/Particle y D
+accessible field net/minecraft/client/particle/Particle z D
+
+# Used by SoundEngineMixin to check the static channel pool
+accessible field com/mojang/blaze3d/audio/Library staticChannels Lcom/mojang/blaze3d/audio/Library$ChannelPool;
+accessible class com/mojang/blaze3d/audio/Library$ChannelPool

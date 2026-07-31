@@ -3,29 +3,29 @@
 	"id": "flerovium",
 	"version": "${version}",
 	"name": "Flerovium",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Makes rendering faster",
 	"authors": [
-		"Me!"
+		"MoePus"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://modrinth.com/mod/flerovium",
+		"sources": "https://github.com/MoePus/Flerovium"
 	},
-	"license": "CC0-1.0",
-	"icon": "assets/flerovium/icon.png",
-	"environment": "*",
+	"license": "LGPL-3.0",
+	"environment": "client",
 	"entrypoints": {
-		"main": [
+		"client": [
 			"com.safe.flerovium.Flerovium"
 		]
 	},
 	"mixins": [
 		"flerovium.mixins.json"
 	],
+	"accessWidener": "flerovium.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.19.3",
 		"minecraft": "~26.2",
 		"java": ">=25",
-		"fabric-api": "*"
+		"sodium": ">=0.9.1"
 	}
 }
