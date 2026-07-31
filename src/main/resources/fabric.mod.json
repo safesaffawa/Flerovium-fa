@@ -3,18 +3,17 @@
 	"id": "flerovium",
 	"version": "${version}",
 	"name": "Flerovium",
-	"description": "Makes rendering faster — a Sodium optimization companion mod",
+	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"MoePus",
-		"ported by safe"
+		"Me!"
 	],
 	"contact": {
-		"homepage": "https://modrinth.com/mod/flerovium",
-		"sources": "https://github.com/MoePus/flerovium"
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
-	"license": "LGPL-3.0",
+	"license": "CC0-1.0",
 	"icon": "assets/flerovium/icon.png",
-	"environment": "client",
+	"environment": "*",
 	"entrypoints": {
 		"main": [
 			"com.safe.flerovium.Flerovium"
@@ -23,11 +22,10 @@
 	"mixins": [
 		"flerovium.mixins.json"
 	],
-	"accessWidener": "flerovium.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.19.3",
 		"minecraft": "~26.2",
 		"java": ">=25",
-		"sodium": ">=0.7.0"
+		"fabric-api": "*"
 	}
 }
