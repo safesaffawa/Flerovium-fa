@@ -11,20 +11,53 @@ public class MixinPlugin implements IMixinConfigPlugin {
 
    private static final String[] REQUIRED_MODS = {"sodium", "fabricloader", "minecraft"};
 
+   // 所有 Mixin 目标类 —— 缺任何一个直接炸，绝不留情
+   private static final String[] CRITICAL_TARGETS = {
+      // Sodium 实体渲染（核心优化）
+      "net.caffeinemc.mods.sodium.client.render.immediate.model.EntityRenderer",
+      "net.caffeinemc.mods.sodium.client.render.immediate.model.ModelCuboid",
+      // Minecraft 粒子系统
+      "net.minecraft.client.particle.CampfireSmokeParticle",
+      "net.minecraft.client.particle.Particle",
+      "net.minecraft.client.particle.SingleQuadParticle",
+      // Minecraft 客户端 & 音效
+      "net.minecraft.client.multiplayer.ClientLevel",
+      "net.minecraft.client.sounds.SoundEngine",
+      "com.mojang.blaze3d.audio.Library",
+      // Flerovium 自身配置
+      "com.safe.flerovium.Config"
+   };
+
    public MixinPlugin() {
    }
 
    public void onLoad(String mixinPackage) {
-      // 强制检查：缺任何必需模组直接崩溃
+      // 1. 依赖检查
       for (String modId : REQUIRED_MODS) {
          if (!FabricLoader.getInstance().isModLoaded(modId)) {
             throw new RuntimeException(
-               "[Flerovium] CRITICAL: Required mod '" + modId + "' is NOT loaded! "
-               + "Flerovium cannot function without it. Install " + modId + " and restart."
+               "[Flerovium] FATAL: Required mod '" + modId + "' is MISSING! "
+               + "Install it and restart."
             );
          }
       }
-      Flerovium.LOGGER.info("[Flerovium] All dependency checks passed. Full performance mode ENGAGED.");
+
+      // 2. 目标类存在性检查 —— ClassNotFoundException 直接崩
+      for (String className : CRITICAL_TARGETS) {
+         try {
+            Class.forName(className);
+            Flerovium.LOGGER.info("[Flerovium] Target verified: {}", className);
+         } catch (ClassNotFoundException e) {
+            throw new RuntimeException(
+               "[Flerovium] FATAL: Target class NOT FOUND: " + className
+               + "\nThis means the mod environment is incompatible with Flerovium."
+               + "\nCheck that Sodium and Minecraft versions match.",
+               e
+            );
+         }
+      }
+
+      Flerovium.LOGGER.info("[Flerovium] ALL {} targets verified. FULL PERFORMANCE MODE.", CRITICAL_TARGETS.length);
    }
 
    public String getRefMapperConfig() {
