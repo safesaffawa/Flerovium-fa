@@ -1,6 +1,5 @@
 package com.safe.flerovium.mixins.Entity;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.caffeinemc.mods.sodium.api.math.MatrixHelper;
 import net.caffeinemc.mods.sodium.api.vertex.buffer.VertexBufferWriter;
@@ -138,12 +137,12 @@ public abstract class EntityRendererMixin {
 
 		int cullingMask = ((ModelCuboidAccessor) cuboid).getCullMask();
 
-		// View-space back-face culling. The guards keep it strictly conservative:
-		//  - only for cuboids at least 16 units in front of the camera (pose.m32() is the
-		//    view-space Z of the cuboid origin, negative = in front);
-		//  - only when the global model-view matrix carries no Z translation, i.e. the pose
-		//    really is model->view (otherwise we fall back to Sodium's path, no culling).
-		if (Flerovium.config.entityBackFaceCulling && pose.m32() <= -16.0F && RenderSystem.getModelViewMatrix().m32() == 0.0F) {
+		// View-space back-face culling. The guard keeps it strictly conservative:
+		// only for cuboids at least 16 units in front of the camera (pose.m32() is the
+		// view-space Z of the cuboid origin, negative = in front). MC 26.2 renders
+		// entities camera-relative, so the pose at renderCuboid is model->view and the
+		// camera sits at the origin.
+		if (Flerovium.config.entityBackFaceCulling && pose.m32() <= -16.0F) {
 			Matrix3f n = matrices.normal();
 			// Columns of the normal matrix are the view-space images of the model-space axes.
 			float axX = n.m00, axY = n.m10, axZ = n.m20; // +X axis

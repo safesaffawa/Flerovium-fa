@@ -18,9 +18,9 @@ public abstract class ReduceTerrainParticlesMixin {
 	@Inject(method = "addDestroyBlockEffect", at = @At("HEAD"), cancellable = true)
 	void skipFarDestroy(BlockPos pos, BlockState state, CallbackInfo ci) {
 		Minecraft client = Minecraft.getInstance();
-		Camera cam = client.gameRenderer.getMainCamera();
+		Camera cam = client.gameRenderer.mainCamera();
 		Vec3 camPos = cam.position();
-		Vec3 blockPos = pos.getCenter();
+		Vec3 blockPos = new Vec3((double) pos.getX() + 0.5, (double) pos.getY() + 0.5, (double) pos.getZ() + 0.5);
 		double dx = blockPos.x - camPos.x;
 		double dy = blockPos.y - camPos.y;
 		double dz = blockPos.z - camPos.z;

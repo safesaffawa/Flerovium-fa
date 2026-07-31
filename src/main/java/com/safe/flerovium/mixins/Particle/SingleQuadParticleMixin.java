@@ -1,6 +1,5 @@
 package com.safe.flerovium.mixins.Particle;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.SingleQuadParticle;
@@ -19,7 +18,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 	}
 
 	protected int getLightCoords(float pt) {
-		long tickCount = Minecraft.getInstance().clientTickCount;
+		long tickCount = this.level.getGameTime();
 		if (tickCount == this.flerovium$lastTick) {
 			return this.flerovium$cachedLight;
 		} else {
