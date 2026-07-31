@@ -2,16 +2,29 @@ package com.safe.flerovium;
 
 import java.util.List;
 import java.util.Set;
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 public class MixinPlugin implements IMixinConfigPlugin {
+
+   private static final String[] REQUIRED_MODS = {"sodium", "fabricloader", "minecraft"};
+
    public MixinPlugin() {
    }
 
    public void onLoad(String mixinPackage) {
-      Flerovium.LOGGER.info("Flerovium MixinPlugin loaded — ALL optimizations ENABLED");
+      // 强制检查：缺任何必需模组直接崩溃
+      for (String modId : REQUIRED_MODS) {
+         if (!FabricLoader.getInstance().isModLoaded(modId)) {
+            throw new RuntimeException(
+               "[Flerovium] CRITICAL: Required mod '" + modId + "' is NOT loaded! "
+               + "Flerovium cannot function without it. Install " + modId + " and restart."
+            );
+         }
+      }
+      Flerovium.LOGGER.info("[Flerovium] All dependency checks passed. Full performance mode ENGAGED.");
    }
 
    public String getRefMapperConfig() {
@@ -19,8 +32,8 @@ public class MixinPlugin implements IMixinConfigPlugin {
    }
 
    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-      // 全部强制应用，不容忍静默降级
-      Flerovium.LOGGER.info("Mixin APPLIED: {}", mixinClassName);
+      // 不允许任何静默跳过 —— 要么注入，要么崩溃
+      Flerovium.LOGGER.info("[Flerovium] FORCE APPLY: {}", mixinClassName);
       return true;
    }
 
