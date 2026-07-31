@@ -143,14 +143,14 @@ public abstract class EntityRendererMixin {
          float posY = c000y + c011y;
          float posZ = c000z + c011z;
          if (posX * normal.m00 + posY * normal.m01 + posZ * normal.m02 < 0.0F) {
-            cullingMask &= ~(1 << 2); // cull EAST (FACE_NEG_X)
+            cullingMask &= ~(1 << 4); // cull WEST (FACE_POS_X), back-face when entity is left of camera
          }
 
          posX = c100x + c111x;
          posY = c100y + c111y;
          posZ = c100z + c111z;
          if (posX * normal.m00 + posY * normal.m01 + posZ * normal.m02 > 0.0F) {
-            cullingMask &= ~(1 << 4); // cull WEST (FACE_POS_X)
+            cullingMask &= ~(1 << 2); // cull EAST (FACE_NEG_X), back-face when entity is right of camera
          }
 
          // Z-axis: determine which face points away from camera
