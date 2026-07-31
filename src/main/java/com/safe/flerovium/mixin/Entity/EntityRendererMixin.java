@@ -133,48 +133,54 @@ public abstract class EntityRendererMixin {
       float c011z = c010z + vzz;
       setVertex(7, c011x, c011y, c011z, color);
       int cullingMask = ((ModelCuboidAccessor)cuboid).getCullMask();
-      if (matrices.pose().m32() <= -16.0F && Flerovium.config.entityBackFaceCulling) {
+      if (Flerovium.config.entityBackFaceCulling) {
          Matrix3f normal = matrices.normal();
+         // FACE_NEG_X = 2 (EAST), FACE_POS_X = 4 (WEST) in Sodium 0.9.1
+         // FACE_NEG_Z = 3 (NORTH), FACE_POS_Z = 5 (SOUTH)
+
+         // X-axis: determine which face points away from camera
          float posX = c000x + c011x;
          float posY = c000y + c011y;
          float posZ = c000z + c011z;
          if (posX * normal.m00 + posY * normal.m01 + posZ * normal.m02 < 0.0F) {
-            cullingMask &= ~(1 << (cuboid.sizeX > 0.0F ? 4 : 2));
+            cullingMask &= ~(1 << 2); // cull EAST (FACE_NEG_X)
          }
 
          posX = c100x + c111x;
          posY = c100y + c111y;
          posZ = c100z + c111z;
          if (posX * normal.m00 + posY * normal.m01 + posZ * normal.m02 > 0.0F) {
-            cullingMask &= ~(1 << (cuboid.sizeX > 0.0F ? 2 : 4));
+            cullingMask &= ~(1 << 4); // cull WEST (FACE_POS_X)
          }
 
+         // Z-axis: determine which face points away from camera
          posX = c000x + c110x;
          posY = c000y + c110y;
          posZ = c000z + c110z;
          if (posX * normal.m20 + posY * normal.m21 + posZ * normal.m22 < 0.0F) {
-            cullingMask &= -9;
+            cullingMask &= ~(1 << 3); // cull NORTH (FACE_NEG_Z)
          }
 
          posX = c001x + c111x;
          posY = c001y + c111y;
          posZ = c001z + c111z;
          if (posX * normal.m20 + posY * normal.m21 + posZ * normal.m22 > 0.0F) {
-            cullingMask &= -33;
+            cullingMask &= ~(1 << 5); // cull SOUTH (FACE_POS_Z)
          }
 
+         // Y-axis: determine which face points away from camera
          posX = c000x + c101x;
          posY = c000y + c101y;
          posZ = c000z + c101z;
          if (posX * normal.m10 + posY * normal.m11 + posZ * normal.m12 < 0.0F) {
-            cullingMask &= -2;
+            cullingMask &= ~(1 << 0); // cull DOWN (FACE_NEG_Y)
          }
 
          posX = c010x + c111x;
          posY = c010y + c111y;
          posZ = c010z + c111z;
          if (posX * normal.m10 + posY * normal.m11 + posZ * normal.m12 > 0.0F) {
-            cullingMask &= -3;
+            cullingMask &= ~(1 << 1); // cull UP (FACE_POS_Y)
          }
       }
 
